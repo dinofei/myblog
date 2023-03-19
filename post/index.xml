@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Dinofei Blog</title>
+    <title>Posts on 宁飞的个人博客</title>
     <link>https://dinofei.github.io/myblog/post/</link>
-    <description>Recent content in Posts on Dinofei Blog</description>
+    <description>Recent content in Posts on 宁飞的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 19 Mar 2023 17:26:52 +0800</lastBuildDate><atom:link href="https://dinofei.github.io/myblog/post/index.xml" rel="self" type="application/rss+xml" />
@@ -24,7 +24,7 @@ Let&amp;rsquo;s GO!!!</description>
       <pubDate>Sun, 19 Mar 2023 17:26:45 +0800</pubDate>
       
       <guid>https://dinofei.github.io/myblog/post/article_list/</guid>
-      <description>this is a article list page.</description>
+      <description>所有文章 我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？ </description>
     </item>
     
   </channel>

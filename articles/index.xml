@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>宁飞的个人博客</title>
-    <link>https://dinofei.github.io/myblog/</link>
-    <description>Recent content on 宁飞的个人博客</description>
+    <title>Articles on 宁飞的个人博客</title>
+    <link>https://dinofei.github.io/myblog/articles/</link>
+    <description>Recent content in Articles on 宁飞的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 19 Mar 2023 19:03:42 +0800</lastBuildDate><atom:link href="https://dinofei.github.io/myblog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 19 Mar 2023 19:03:42 +0800</lastBuildDate><atom:link href="https://dinofei.github.io/myblog/articles/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？</title>
       <link>https://dinofei.github.io/myblog/articles/2023_03_19_001/</link>
@@ -25,26 +25,6 @@ hugo ，然后将public目录的内容上传到GitHub的repo中，在其setting�
 注意配置文件中的 baseurl 也要替换为pages的根域名。
 小技巧：
 在Hugo中如何写类似&amp;lt;a&amp;gt;标签的跳转链接，使用md的[]()语法，然后使用 ref 包裹要跳转的文件，比如 []({{ &amp;lt; ref &amp;quot;/path/file.md&amp;quot; &amp;gt; }})，需要注意的是 ref两边的 &amp;lt; &amp;gt;中间有空格。 https://www.</description>
-    </item>
-    
-    <item>
-      <title>介绍</title>
-      <link>https://dinofei.github.io/myblog/post/home/</link>
-      <pubDate>Sun, 19 Mar 2023 17:26:52 +0800</pubDate>
-      
-      <guid>https://dinofei.github.io/myblog/post/home/</guid>
-      <description>网站介绍 这是我用Hugo生成的一个静态网站，我会将平时工作和学习中遇到的一些有价值的知识点，以博客的形式记录下来并发布到这个博客网站中。
-做这个网站，一方面以博客的形式记录一些知识，增强记忆和方便以后回顾。二是我可以把它作为一个练习的项目，我可以使用各种我感兴趣的编程技巧纳入进来，就好像开发一个真实的项目一样。
-Let&amp;rsquo;s GO!!!</description>
-    </item>
-    
-    <item>
-      <title>文章</title>
-      <link>https://dinofei.github.io/myblog/post/article_list/</link>
-      <pubDate>Sun, 19 Mar 2023 17:26:45 +0800</pubDate>
-      
-      <guid>https://dinofei.github.io/myblog/post/article_list/</guid>
-      <description>所有文章 我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？ </description>
     </item>
     
   </channel>
