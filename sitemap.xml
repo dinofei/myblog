@@ -2,20 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://dinofei.github.io/myblog/</loc>
+    <loc>https://dinofei.github.io/myblog/</loc>
     <lastmod>2023-03-19T17:26:52+08:00</lastmod>
   </url><url>
-    <loc>http://dinofei.github.io/myblog/post/</loc>
+    <loc>https://dinofei.github.io/myblog/post/</loc>
     <lastmod>2023-03-19T17:26:52+08:00</lastmod>
   </url><url>
-    <loc>http://dinofei.github.io/myblog/post/home/</loc>
+    <loc>https://dinofei.github.io/myblog/post/home/</loc>
     <lastmod>2023-03-19T17:26:52+08:00</lastmod>
   </url><url>
-    <loc>http://dinofei.github.io/myblog/post/article_list/</loc>
+    <loc>https://dinofei.github.io/myblog/post/article_list/</loc>
     <lastmod>2023-03-19T17:26:45+08:00</lastmod>
   </url><url>
-    <loc>http://dinofei.github.io/myblog/categories/</loc>
+    <loc>https://dinofei.github.io/myblog/categories/</loc>
   </url><url>
-    <loc>http://dinofei.github.io/myblog/tags/</loc>
+    <loc>https://dinofei.github.io/myblog/tags/</loc>
   </url>
 </urlset>

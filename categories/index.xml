@@ -2,9 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Dinofei Blog</title>
-    <link>http://dinofei.github.io/myblog/categories/</link>
+    <link>https://dinofei.github.io/myblog/categories/</link>
     <description>Recent content in Categories on Dinofei Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language><atom:link href="http://dinofei.github.io/myblog/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language><atom:link href="https://dinofei.github.io/myblog/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
