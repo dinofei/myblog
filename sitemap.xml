@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://dinofei.github.io/myblog/articles/</loc>
-    <lastmod>2023-03-19T19:03:42+08:00</lastmod>
+    <loc>https://dinofei.github.io/myblog/posts/20230322001/</loc>
+    <lastmod>2023-03-22T00:25:43+08:00</lastmod>
   </url><url>
     <loc>https://dinofei.github.io/myblog/</loc>
+    <lastmod>2023-03-22T00:25:43+08:00</lastmod>
+  </url><url>
+    <loc>https://dinofei.github.io/myblog/posts/20230319001/</loc>
     <lastmod>2023-03-19T19:03:42+08:00</lastmod>
   </url><url>
-    <loc>https://dinofei.github.io/myblog/articles/2023_03_19_001/</loc>
+    <loc>https://dinofei.github.io/myblog/posts/</loc>
     <lastmod>2023-03-19T19:03:42+08:00</lastmod>
   </url><url>
-    <loc>https://dinofei.github.io/myblog/post/</loc>
+    <loc>https://dinofei.github.io/myblog/home/</loc>
     <lastmod>2023-03-19T17:26:52+08:00</lastmod>
   </url><url>
-    <loc>https://dinofei.github.io/myblog/post/home/</loc>
+    <loc>https://dinofei.github.io/myblog/home/home/</loc>
     <lastmod>2023-03-19T17:26:52+08:00</lastmod>
-  </url><url>
-    <loc>https://dinofei.github.io/myblog/post/article_list/</loc>
-    <lastmod>2023-03-19T17:26:45+08:00</lastmod>
   </url><url>
     <loc>https://dinofei.github.io/myblog/categories/</loc>
   </url><url>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-cn" lang="zh-cn">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.111.3">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>一次批量修改更新mongo实践经历 &middot; 宁飞的个人博客</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dinofei.github.io/myblog/">
+        <h1>宁飞的个人博客</h1>
+      </a>
+      <p class="lead">
+         业精于勤荒于嬉 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        
+        <li><a href="/myblog/home/home"> 介绍 </a></li><li><a href="/myblog/posts/"> 文章列表 </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2023. All rights reserved. </p>
+  </div>
+</aside>
+    <main class="content container">
+    <div class="post">
+  <h1>一次批量修改更新mongo实践经历</h1>
+  <time datetime=2023-03-22T00:25:43&#43;0800 class="post-date">2023年03月22日 00:25:43</time>
+  <p>使用mongo的aggregate的方法，利用pipeline来对数据进行批量的整合改造，最后更新聚合。</p>
+<p>直接上代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// 统计ratings中每个电影的评分平均值和打分人数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 关联movies并更新到rating和user_count的字段中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 为了顺带测试一下$inc的功能，对rating使用自增而不是set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">ratings</span>.<span style="color:#a6e22e">aggregate</span>([
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$group</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;$movieId&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">user_count</span><span style="color:#f92672">:</span> {<span style="color:#a6e22e">$sum</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>},
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">avg_rating</span><span style="color:#f92672">:</span> {<span style="color:#a6e22e">$avg</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;$rating&#34;</span>},
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$addFields</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;avg_rating&#34;</span><span style="color:#f92672">:</span> {<span style="color:#a6e22e">$toInt</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;$avg_rating&#34;</span>}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$out</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;tmp_ratings&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">movies</span>.<span style="color:#a6e22e">aggregate</span>([
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$lookup</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;tmp_ratings&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">localField</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;movieId&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">foreignField</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_id&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">as</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;result&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$unwind</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;$result&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$project</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;ext.rating2&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">$add</span><span style="color:#f92672">:</span> [{<span style="color:#a6e22e">$ifNull</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;$ext.rating2&#34;</span>, <span style="color:#ae81ff">0</span>]}, <span style="color:#e6db74">&#34;$result.avg_rating&#34;</span>]
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;ext.user_count&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;$result.user_count&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;ext.rating&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;$ext.rating&#34;</span>,<span style="color:#75715e">// 保留原字段rating不被丢弃
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">$merge</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">into</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;movies&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">on</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_id&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">whenMatched</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;merge&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">whenNotMatched</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;discard&#34;</span>,
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">tmp_ratings</span>.<span style="color:#a6e22e">drop</span>()
+</span></span></code></pre></div><p>接下来重点解决下这段代码：</p>
+<ol>
+<li>aggregate方法代表开启一个聚合管道，适合将一组方法聚合在一起</li>
+<li>$group是一个step，表示将当前集合进行分组，_id表示以那个字段作为分组的根据，这里使用$movieid，也就是当前集合中的movieid字段。$sum表示统计每个分组中包含的行数，然后用user_count表示。$avg则是计算该分组中rating的平均值。</li>
+<li>上面avg_rating计算出来的值是一个浮点数，根据实际业务需要可以使用$addField和$toInt来将它的类型修改为整数。</li>
+<li>$out表示将变形后的集合放入到一个新的集合tmp_ratings中，以便于后续使用，使用完成后就可以将这个临时表删除掉。</li>
+<li>接下来就要利用上面计算出来的数据，来关联更新字段了。使用$lookup来关联两个集合，就像mysql里的join一样。from表示连接的集合,localField表示当前表的关联字段，$foreignField表示关联集合的关联字段，as表示将关联之后的每行记录用result这个值来表示。</li>
+<li>两个集合已经关联好了，然后遍历来更新所需字段，使用$unwind这个operator，按照$result来解包，$result就是上面$lookup时定义的result。</li>
+<li>使用$project来对字段进行变形或者生成新的字段，$add用于计算字段的和，注意这里对ext.rating2使用了$ifNull，表示当ext.rating2这个字段不存在时，我们使用一个默认值代替。然后因为更新的是嵌套字段，如果ext中还有其他字段比如rating，最后合并时会把ext中其他字段给丢弃，所以将原来的值也写进$project中，最后更新时就不会丢弃了。</li>
+<li>使用$merge将$project中的字段和当前集合的字段进行合并更新，into表示要合并的集合，on表示关联的字段，whenMatched: merge 表示当匹配上时对两者进行合并，而不存在的字段则会保留，其中需要注意的事嵌套字段会被从外层整个合并，whenNotMatched: discard 表示不匹配时对改行不做处理。</li>
+</ol>
+<p>&hellip;</p>
+<p><strong>这样就完成了对数据进行批量整合更新的过程，后续看看在操作线上大数据量时会不会遇到性能的问题，到时候再来更新补充</strong></p>
+<hr>
+<p>这份示例里面的数据来自movielens，正好也借助最近刚学的python来做了次csv批量导入mongo的功能，上代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@report_run_time</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">save_movies</span>():
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span> MongoClient(<span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#ae81ff">27018</span>)
+</span></span><span style="display:flex;"><span>    db <span style="color:#f92672">=</span> client[<span style="color:#e6db74">&#34;test&#34;</span>]
+</span></span><span style="display:flex;"><span>    coll <span style="color:#f92672">=</span> db[<span style="color:#e6db74">&#34;movies&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;./movies.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># df.to_dict(&#34;records&#34;) 将csv文件转成[{column:value}...]的形式</span>
+</span></span><span style="display:flex;"><span>    coll<span style="color:#f92672">.</span>insert_many(df<span style="color:#f92672">.</span>to_dict(<span style="color:#e6db74">&#34;records&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@report_run_time</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">save_ratings</span>():
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span> MongoClient(<span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#ae81ff">27018</span>)
+</span></span><span style="display:flex;"><span>    db <span style="color:#f92672">=</span> client[<span style="color:#e6db74">&#34;test&#34;</span>]
+</span></span><span style="display:flex;"><span>    coll <span style="color:#f92672">=</span> db[<span style="color:#e6db74">&#34;ratings&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># csv文件过大，一次性读取到内存会导致程序卡住</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 使用chunksize对csv文件分块 然后分块插入mongo进行优化</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> df <span style="color:#f92672">in</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;./ratings.csv&#34;</span>, chunksize<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># df.to_dict(&#34;records&#34;) 将csv文件转成[{column:value}...]的形式</span>
+</span></span><span style="display:flex;"><span>        coll<span style="color:#f92672">.</span>insert_many(df<span style="color:#f92672">.</span>to_dict(<span style="color:#e6db74">&#34;records&#34;</span>))
+</span></span></code></pre></div><p>分别是导入movies和ratings两个表，</p>
+<ol>
+<li>需要引入pandas和pymongo两个库，
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>pip install pandas
+</span></span><span style="display:flex;"><span>pip install pymongo
+</span></span></code></pre></div></li>
+<li>使用read_csv这个方法来读取csv文件，然后将内容转为可批量插入mongo的格式，使用to_dict(&ldquo;record&rdquo;)进行转换。</li>
+<li>read_csv是一次性读取到内存，在读数据量比较大的文件时，使用参数chunksize进行分块读取，分多次插入数据。</li>
+</ol>
+<p>最后附上相关文档和链接以供后续学习：</p>
+<ul>
+<li><a href="https://pandas.pydata.org/pandas-docs/stable/index.html">https://pandas.pydata.org/pandas-docs/stable/index.html</a></li>
+<li><a href="https://grouplens.org/datasets/movielens/">https://grouplens.org/datasets/movielens/</a></li>
+<li><a href="https://www.mongodb.com/docs/manual/reference/">https://www.mongodb.com/docs/manual/reference/</a></li>
+</ul>
+
+</div>
+
+
+    </main>
+
+    
+      
+    
+  </body>
+</html>

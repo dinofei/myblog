@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-cn" lang="zh-cn">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.111.3">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？ &middot; 宁飞的个人博客</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dinofei.github.io/myblog/">
+        <h1>宁飞的个人博客</h1>
+      </a>
+      <p class="lead">
+         业精于勤荒于嬉 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        
+        <li><a href="/myblog/home/home"> 介绍 </a></li><li><a href="/myblog/posts/"> 文章列表 </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2023. All rights reserved. </p>
+  </div>
+</aside>
+    <main class="content container">
+    <div class="post">
+  <h1>我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？</h1>
+  <time datetime=2023-03-19T19:03:42&#43;0800 class="post-date">2023年03月19日 19:03:42</time>
+  <ol>
+<li>
+<p>安装Hugo，<code>brew install hugo</code></p>
+</li>
+<li>
+<p>快速生成一个网站目录， <code>hugo new</code></p>
+</li>
+<li>
+<p>修改根目录下的配置文件，</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#a6e22e">baseURL</span> = <span style="color:#e6db74">&#39;&#39;</span> <span style="color:#75715e">#网站根域名</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">builddrafts</span> = <span style="color:#66d9ef">true</span> <span style="color:#75715e">#允许编译草稿文件 </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">theme</span> = <span style="color:#e6db74">&#34;hyde&#34;</span> <span style="color:#75715e">#使用的主题，需要将该主题clone到theme中，git clone https://github.com/spf13/hyde.git</span>
+</span></span><span style="display:flex;"><span>[[<span style="color:#a6e22e">menu</span>.<span style="color:#a6e22e">main</span>]]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#39;文章&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#39;/post/article_list&#39;</span>
+</span></span><span style="display:flex;"><span>[[<span style="color:#a6e22e">menu</span>.<span style="color:#a6e22e">main</span>]]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#39;介绍&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#39;/post/home&#39;</span> <span style="color:#75715e">#定义自己的菜单目录</span>
+</span></span></code></pre></div></li>
+<li>
+<p>接下来就可以生成内容页面，编写自己的博客了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ hugo new post/home.md
+</span></span></code></pre></div><p>&hellip;</p>
+</li>
+<li>
+<p>然后就可以在本地预览页面了,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>hugo server --disableFastRender
+</span></span></code></pre></div><p>,页面内容会实时编译。当然为了方便，可以将该命令写到makefile中。</p>
+</li>
+<li>
+<p>编写完之后需要生成静态html页面，目录默认为<code>public</code>目录, 执行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ hugo
+</span></span></code></pre></div><p>，然后将public目录的内容上传到GitHub的repo中，在其setting中开启pages功能就OK了。pages的地址为 <code>https://(your username)/github.io/(your repo name)/</code></p>
+</li>
+<li>
+<p>注意配置文件中的 <code>baseurl</code> 也要替换为pages的根域名。</p>
+</li>
+</ol>
+<p>小技巧：</p>
+<ol>
+<li>在Hugo中如何写类似<code>&lt;a&gt;</code>标签的跳转链接，使用md的<code>[]()</code>语法，然后使用 <code>ref</code> 包裹要跳转的文件，比如 <code>[]({{ &lt; ref &quot;/path/file.md&quot; &gt; }})</code>，需要注意的是 <code>ref</code>两边的 <code>&lt; &gt;</code>中间有空格。</li>
+</ol>
+<ul>
+<li><a href="https://www.thisfaner.com/p/ref-relref-in-hugo/">https://www.thisfaner.com/p/ref-relref-in-hugo/</a></li>
+</ul>
+<ol start="2">
+<li>Hugo会自动在每个section下生成一个list的页面，当然也可以通过创建一个名为<code>_index.md</code>的文件作为列表页(话说在中文文档上找了半天都没找到，而在英文文档上却说的很明白，看来真是不能看翻译后的啊，差别太大了😂)，例如:
+<pre tabindex="0"><code>content/posts/_index.md 
+</code></pre></li>
+</ol>
+<ul>
+<li><a href="https://qwqaq.com/2022/04/migrate-to-hugo/">https://qwqaq.com/2022/04/migrate-to-hugo/</a></li>
+<li><a href="https://gohugo.io/templates/lists/">https://gohugo.io/templates/lists/</a></li>
+</ul>
+
+</div>
+
+
+    </main>
+
+    
+      
+    
+  </body>
+</html>

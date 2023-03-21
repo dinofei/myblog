@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>宁飞的个人博客</title>
-  <meta name="description" content="记录平时工作和学习中有趣的实践" />
+  <meta name="description" content="业精于勤荒于嬉" />
 
   
   <link type="text/css" rel="stylesheet" href="https://dinofei.github.io/myblog/css/print.css" media="print">
@@ -32,64 +32,71 @@
   <aside class="sidebar">
   <div class="container sidebar-sticky">
     <div class="sidebar-about">
-      <a href="https://dinofei.github.io/myblog/"><h1>宁飞的个人博客</h1></a>
+      <a href="https://dinofei.github.io/myblog/">
+        <h1>宁飞的个人博客</h1>
+      </a>
       <p class="lead">
-       记录平时工作和学习中有趣的实践 
+         业精于勤荒于嬉 
       </p>
     </div>
 
     <nav>
       <ul class="sidebar-nav">
-        <li><a href="https://dinofei.github.io/myblog/">Home</a> </li>
-        <li><a href="/myblog/post/home"> 介绍 </a></li><li><a href="/myblog/post/article_list"> 文章 </a></li>
+        
+        <li><a href="/myblog/home/home"> 介绍 </a></li><li><a href="/myblog/posts/"> 文章列表 </a></li>
       </ul>
     </nav>
 
     <p>&copy; 2023. All rights reserved. </p>
   </div>
 </aside>
-
     <main class="content container">
     <div class="posts">
-<article class="post">
-  <h1 class="post-title">
-    <a href="https://dinofei.github.io/myblog/articles/2023_03_19_001/">我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？</a>
-  </h1>
-  <time datetime="2023-03-19T19:03:42&#43;0800" class="post-date">Sun, Mar 19, 2023</time>
-  安装Hugo，brew install hugo
+  <article class="post">
+    <h1 class="post-title">
+      <a href="https://dinofei.github.io/myblog/posts/20230322001/">一次批量修改更新mongo实践经历</a>
+    </h1>
+    <time datetime=" 2023-03-22T00:25:43&#43;0800" class="post-date">Wed, Mar 22, 2023</time>
+    使用mongo的aggregate的方法，利用pipeline来对数据进行批量的整合改造，最后更新聚合。
+直接上代码：
+// 统计ratings中每个电影的评分平均值和打分人数 // 关联movies并更新到rating和user_count的字段中 // 为了顺带测试一下$inc的功能，对rating使用自增而不是set db.ratings.aggregate([ { $group: { _id: &#34;$movieId&#34;, user_count: {$sum: 1}, avg_rating: {$avg: &#34;$rating&#34;}, } }, { $addFields: { &#34;avg_rating&#34;: {$toInt: &#34;$avg_rating&#34;} } }, { $out: &#34;tmp_ratings&#34; } ]) db.movies.aggregate([ { $lookup: { from: &#34;tmp_ratings&#34;, localField: &#34;movieId&#34;, foreignField: &#34;_id&#34;, as: &#34;result&#34; } }, { $unwind: &#34;$result&#34; }, { $project: { _id: 1, &#34;ext.rating2&#34;: { $add: [{$ifNull: [&#34;$ext.rating2&#34;, 0]}, &#34;$result.avg_rating&#34;] }, &#34;ext.user_count&#34;: &#34;$result.user_count&#34;, &#34;ext.rating&#34;: &#34;$ext.rating&#34;,// 保留原字段rating不被丢弃 } }, { $merge: { into: &#34;movies&#34;, on: &#34;_id&#34;, whenMatched: &#34;merge&#34;, whenNotMatched: &#34;discard&#34;, } }, ]) db.
+    
+    <div class="read-more-link">
+      <a href="/myblog/posts/20230322001/">Read More…</a>
+    </div>
+    
+  </article><article class="post">
+    <h1 class="post-title">
+      <a href="https://dinofei.github.io/myblog/posts/20230319001/">我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？</a>
+    </h1>
+    <time datetime=" 2023-03-19T19:03:42&#43;0800" class="post-date">Sun, Mar 19, 2023</time>
+    安装Hugo，brew install hugo
 快速生成一个网站目录， hugo new
 修改根目录下的配置文件，
 baseURL = &#39;&#39; #网站根域名 builddrafts = true #允许编译草稿文件 theme = &#34;hyde&#34; #使用的主题，需要将该主题clone到theme中，git clone https://github.com/spf13/hyde.git [[menu.main]] name = &#39;文章&#39; url = &#39;/post/article_list&#39; [[menu.main]] name = &#39;介绍&#39; url = &#39;/post/home&#39; #定义自己的菜单目录 接下来就可以生成内容页面，编写自己的博客了。
-hugo new post/home.md &hellip;
+$ hugo new post/home.md &hellip;
 然后就可以在本地预览页面了,
 hugo server --disableFastRender ,页面内容会实时编译。当然为了方便，可以将该命令写到makefile中。
 编写完之后需要生成静态html页面，目录默认为public目录, 执行
-hugo ，然后将public目录的内容上传到GitHub的repo中，在其setting中开启pages功能就OK了。pages的地址为 https://(your username)/github.io/(your repo name)/
+$ hugo ，然后将public目录的内容上传到GitHub的repo中，在其setting中开启pages功能就OK了。pages的地址为 https://(your username)/github.io/(your repo name)/
 注意配置文件中的 baseurl 也要替换为pages的根域名。
 小技巧：
 在Hugo中如何写类似&lt;a&gt;标签的跳转链接，使用md的[]()语法，然后使用 ref 包裹要跳转的文件，比如 []({{ &lt; ref &quot;/path/file.md&quot; &gt; }})，需要注意的是 ref两边的 &lt; &gt;中间有空格。 https://www.
-  
-  <div class="read-more-link">
-    <a href="/myblog/articles/2023_03_19_001/">Read More…</a>
-  </div>
-  
-</article><article class="post">
-  <h1 class="post-title">
-    <a href="https://dinofei.github.io/myblog/post/home/">介绍</a>
-  </h1>
-  <time datetime="2023-03-19T17:26:52&#43;0800" class="post-date">Sun, Mar 19, 2023</time>
-  网站介绍 这是我用Hugo生成的一个静态网站，我会将平时工作和学习中遇到的一些有价值的知识点，以博客的形式记录下来并发布到这个博客网站中。
+    
+    <div class="read-more-link">
+      <a href="/myblog/posts/20230319001/">Read More…</a>
+    </div>
+    
+  </article><article class="post">
+    <h1 class="post-title">
+      <a href="https://dinofei.github.io/myblog/home/home/">介绍</a>
+    </h1>
+    <time datetime=" 2023-03-19T17:26:52&#43;0800" class="post-date">Sun, Mar 19, 2023</time>
+    网站介绍 这是我用Hugo生成的一个静态网站，我会将平时工作和学习中遇到的一些有价值的知识点，以博客的形式记录下来并发布到这个博客网站中。
 做这个网站，一方面以博客的形式记录一些知识，增强记忆和方便以后回顾。二是我可以把它作为一个练习的项目，我可以使用各种我感兴趣的编程技巧纳入进来，就好像开发一个真实的项目一样。
 Let&rsquo;s GO!!!
-  
-</article><article class="post">
-  <h1 class="post-title">
-    <a href="https://dinofei.github.io/myblog/post/article_list/">文章</a>
-  </h1>
-  <time datetime="2023-03-19T17:26:45&#43;0800" class="post-date">Sun, Mar 19, 2023</time>
-  所有文章 我是如何使用Hugo快速生成一个静态博客网站，并通过GitHub pages发布的？ 
-  
-</article>
+    
+  </article>
 </div>
     </main>
 
